@@ -74,7 +74,7 @@ public class TestAgent {
 		agent.stopAgent();
 	}
 
-	//@Test
+	//m@Test
 	public void testListFile() {
 		HttpGet get = new HttpGet(buildURL("/file/list"));
 		try {
@@ -92,7 +92,7 @@ public class TestAgent {
 		}		
 	}
 	
-	//@Test
+	@Test
 	public void testUploadFile() {
 		given().
 			contentType("multipart/form-data").
