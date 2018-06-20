@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import org.apache.commons.io.FilenameUtils;
 
 public class Utils {
-	private static final String DATA_ROOT_DIR= "Videos";
+	private static final String DATA_ROOT_DIR= "data";
 	private static final String DATA_TEST_DIR = "testData";
 	
 	private static final Path dataPath = Paths.get(DATA_ROOT_DIR);	

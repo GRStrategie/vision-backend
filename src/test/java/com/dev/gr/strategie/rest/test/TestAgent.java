@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -21,7 +22,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.dev.gr.strategie.rest.service.Agent;
+import com.dev.gr.strategie.rest.service.data.Playlist;
 import com.dev.gr.strategie.rest.service.utils.Utils;
+import com.jayway.restassured.http.ContentType;
 
 public class TestAgent {
 
@@ -66,7 +69,7 @@ public class TestAgent {
 		
 	}
 
-	@Test
+	//@Test
 	public void testListFile() {
 		given().
 			log().ifValidationFails().
@@ -78,7 +81,7 @@ public class TestAgent {
 			body("data", hasItem("testFile.txt"));
 	}
 	
-	@Test
+	//@Test
 	public void testUploadFile() {
 		given().
 			contentType("multipart/form-data").
@@ -88,8 +91,8 @@ public class TestAgent {
 		then().
 			statusCode(200);
 	}
-	
-	@Test
+		
+	//@Test
 	public void  testDownloadFile() throws IOException {
 		String fileName = "testDownloadFile.zip";
 		File sourceFile = Utils.dataPath().resolve(fileName).toFile();
@@ -117,7 +120,7 @@ public class TestAgent {
 		} 
 	}
 	
-	@Test
+	//@Test
 	public void  testDeleteFile() {
 		String fileName = "testDeleteFile.txt";
 		given().
@@ -137,6 +140,20 @@ public class TestAgent {
 			statusCode(404).
 			body("status", equalTo("ERROR")).
 			body("data", containsString("NoSuchFileException"));
+	}
+	
+	@Test
+	public void testStartSchedule() throws InterruptedException {
+		Playlist playlist = new Playlist("playlist1", Arrays.asList("testFile1.txt", "testFile2.txt"), "0/2 * * * * ?", null);
+		given().
+			contentType(ContentType.JSON).
+			body(playlist).
+		when().
+			post(buildURL("/schedule/playlist")).
+		then().
+			statusCode(200);
+		Thread.sleep(5000);
+			
 	}
 	
 	public static final String buildURL(String uri) {

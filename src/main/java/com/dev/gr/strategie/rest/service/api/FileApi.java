@@ -36,17 +36,23 @@ public class FileApi {
 
 	public static Route sendFile = (req, res) -> {
 		return form().withMethod("post").attr("enctype", "multipart/form-data").attr("accept", ".*").with(
-				input().withType("file").withName("uploaded_file"),
+				input().withType("file").withName("file"),
 				button().withText("Upload picture")
 				).render();			
 	};
 
 	public static Route uploadFile = (req, res) -> {	
 		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
-		Part reqFilePart = req.raw().getPart("file");
-		Path filePath = Utils.dataPath().resolve(getFileName(reqFilePart).toString());		
-        Files.copy(reqFilePart.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        return "<h1>You uploaded this image:<h1><img src='" + filePath.getFileName() + "'>";
+		req.raw().getParts().stream()
+			.filter(p -> p.getName().equals("file"))
+			.forEach(p -> {
+		        try {
+					Files.copy(p.getInputStream(), Utils.dataPath().resolve(p.getSubmittedFileName()), StandardCopyOption.REPLACE_EXISTING);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
+        return "Success";
 	};
 	
 	public static Route listFiles = (req, res) -> {	
@@ -94,7 +100,7 @@ public class FileApi {
 	};
 	
 	private static String getFileName(Part part) {
-		for (String cd : part.getHeader("content-disposition").split(";")) {
+		for (String cd : part.getHeader("content-disposition").split(";")) {		
 			if (cd.trim().startsWith("filename")) {
 				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
 			}
