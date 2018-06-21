@@ -91,6 +91,7 @@ public class FileApi {
 		res.type("application/json");
 		try {
 			Files.delete(filePath);
+			log.info("File " + filePath + " has been successfully deleted");
 			res.status(200);
 			return new StandardResponse(StatusResponse.SUCCESS, "File " + filePath + " has been successfully deleted");
 		} catch (IOException e) {

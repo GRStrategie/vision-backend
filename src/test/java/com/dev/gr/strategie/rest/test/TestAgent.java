@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +12,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,19 +22,15 @@ import com.dev.gr.strategie.rest.service.Agent;
 import com.dev.gr.strategie.rest.service.data.Playlist;
 import com.dev.gr.strategie.rest.service.utils.Utils;
 import com.jayway.restassured.http.ContentType;
-import com.sun.xml.internal.ws.client.sei.ResponseBuilder.Body;
 
 public class TestAgent {
 
 	private static final String BASE_URL ="http://localhost:10000/api";
 	
 	private static Agent agent;
-	private static CloseableHttpClient client;
-
 	
 	@Before
 	public void before() {
-		client = HttpClients.createDefault();
 	}
 	
 	@BeforeClass
@@ -53,11 +46,6 @@ public class TestAgent {
 
 	@After
 	public void after() {
-		try {
-			client.close();
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
 	}
 
 	@AfterClass
