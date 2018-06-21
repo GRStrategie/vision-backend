@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertTrue;
+import static com.dev.gr.strategie.rest.service.utils.Utils.*;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -20,12 +22,11 @@ import org.junit.Test;
 
 import com.dev.gr.strategie.rest.service.Agent;
 import com.dev.gr.strategie.rest.service.data.Playlist;
-import com.dev.gr.strategie.rest.service.utils.Utils;
 import com.jayway.restassured.http.ContentType;
 
 public class TestAgent {
 
-	private static final String BASE_URL ="http://localhost:10000/api";
+	private static final String BASE_URL = baseUrl();
 	
 	private static Agent agent;
 	
@@ -36,7 +37,7 @@ public class TestAgent {
 	@BeforeClass
 	public static void start() {
 		try {
-			FileUtils.copyToDirectory(FileUtils.listFiles(Utils.testData(), null, false), Utils.data());
+			FileUtils.copyToDirectory(FileUtils.listFiles(testData(), null, false), data());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}			
@@ -51,7 +52,7 @@ public class TestAgent {
 	@AfterClass
 	public static void stop() {
 		agent.stopAgent();
-		FileUtils.listFiles(Utils.data(), null, false).
+		FileUtils.listFiles(data(), null, false).
 			stream().
 			filter(f -> f.isFile()).
 			forEach(f -> FileUtils.deleteQuietly(f));
@@ -74,7 +75,7 @@ public class TestAgent {
 	public void testUploadFile() {
 		given().
 			contentType("multipart/form-data").
-			multiPart("file", Utils.dataPath().resolve("testFile.txt").toFile()).
+			multiPart("file", dataPath().resolve("testFile.txt").toFile()).
 		when().
 			post(buildURL("/files")).
 		then().
@@ -84,8 +85,8 @@ public class TestAgent {
 	//@Test
 	public void  testDownloadFile() throws IOException {
 		String fileName = "testDownloadFile.zip";
-		File sourceFile = Utils.dataPath().resolve(fileName).toFile();
-		File downloadedFile = Utils.dataPath().resolve(Utils.suffixFileName(fileName, "_downloaded")).toFile();
+		File sourceFile = dataPath().resolve(fileName).toFile();
+		File downloadedFile = dataPath().resolve(suffixFileName(fileName, "_downloaded")).toFile();
 		try(InputStream is =
 			given().
 				log().ifValidationFails().

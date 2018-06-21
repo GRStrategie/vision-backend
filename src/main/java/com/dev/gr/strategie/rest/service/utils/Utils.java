@@ -9,11 +9,16 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Utils {
 	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
+	private static final String BASE_URL = rb.getString("base_url");
 	private static final String DATA_ROOT_DIR= rb.getString("data_root_dir");
 	private static final String DATA_TEST_DIR = rb.getString("data_test_dir");
 	
 	private static final Path dataPath = Paths.get(DATA_ROOT_DIR);	
 	private static final Path testDataPath = dataPath.resolve(DATA_TEST_DIR);
+	
+	public static final String baseUrl() {
+		return BASE_URL;
+	}
 	
 	public static final Path dataPath() {
 		return dataPath;

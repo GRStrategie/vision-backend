@@ -4,6 +4,7 @@ package com.dev.gr.strategie.rest.service.api;
 import static j2html.TagCreator.button;
 import static j2html.TagCreator.form;
 import static j2html.TagCreator.input;
+import static com.dev.gr.strategie.rest.service.utils.Utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import com.dev.gr.strategie.rest.service.utils.StandardResponse;
 import com.dev.gr.strategie.rest.service.utils.StatusResponse;
-import com.dev.gr.strategie.rest.service.utils.Utils;
 import com.google.gson.Gson;
 
 import spark.Route;
@@ -46,7 +46,7 @@ public class FileApi {
 			.filter(p -> p.getName().equals("file"))
 			.forEach(p -> {
 		        try {
-					Files.copy(p.getInputStream(), Utils.dataPath().resolve(p.getSubmittedFileName()), StandardCopyOption.REPLACE_EXISTING);
+					Files.copy(p.getInputStream(), dataPath().resolve(p.getSubmittedFileName()), StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
 					log.error("Exception raised : ", e);
 					res.status(500);
@@ -57,7 +57,7 @@ public class FileApi {
 	};
 	
 	public static Route listFiles = (req, res) -> {	
-		File directory = Utils.data();
+		File directory = data();
 		res.type("application/json");
 		
 		if(directory.isDirectory()) {
@@ -73,7 +73,7 @@ public class FileApi {
 	};
 				
 	public static Route downloadFile = (req, res) -> {	
-		Path filePath = Utils.dataPath().resolve(req.params(":filename"));
+		Path filePath = dataPath().resolve(req.params(":filename"));
 		res.type("application/json");
 		try {
 			res.status(200);
@@ -87,7 +87,7 @@ public class FileApi {
 	};
 	
 	public static Route deleteFile = (req, res) -> {
-		Path filePath = Utils.dataPath().resolve(req.params(":filename"));
+		Path filePath = dataPath().resolve(req.params(":filename"));
 		res.type("application/json");
 		try {
 			Files.delete(filePath);
