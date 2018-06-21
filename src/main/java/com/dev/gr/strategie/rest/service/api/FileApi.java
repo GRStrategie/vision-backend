@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.Part;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -49,10 +48,12 @@ public class FileApi {
 		        try {
 					Files.copy(p.getInputStream(), Utils.dataPath().resolve(p.getSubmittedFileName()), StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
+					log.error("Exception raised : ", e);
+					res.status(500);
 					throw new RuntimeException(e);
 				}
 			});
-        return "Success";
+        return gson.toJson(new StandardResponse(StatusResponse.SUCCESS));
 	};
 	
 	public static Route listFiles = (req, res) -> {	
@@ -98,13 +99,4 @@ public class FileApi {
 			return new StandardResponse(StatusResponse.ERROR, gson.toJsonTree(e.toString()));
 		}
 	};
-	
-	private static String getFileName(Part part) {
-		for (String cd : part.getHeader("content-disposition").split(";")) {		
-			if (cd.trim().startsWith("filename")) {
-				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-			}
-		}
-		return null;
-	}
 }

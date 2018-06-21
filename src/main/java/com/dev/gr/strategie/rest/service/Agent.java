@@ -30,8 +30,9 @@ public class Agent {
 				get("/:filename",		 			FileApi.downloadFile);
 				delete("/:filename",				FileApi.deleteFile,					new JsonTransformer());	
 			});
-			path("/schedule", () -> {
-				post("/playlist",					ScheduleApi.schedulePlaylist,		new JsonTransformer());
+			path("/playlist", () -> {
+				post("/schedule",					ScheduleApi.schedulePlaylist,		new JsonTransformer());
+				delete("/:playlistName",			ScheduleApi.deletePlaylist, 		new JsonTransformer());
 			});
 		});	
 	}

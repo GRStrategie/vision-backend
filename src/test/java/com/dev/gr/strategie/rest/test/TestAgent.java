@@ -25,6 +25,7 @@ import com.dev.gr.strategie.rest.service.Agent;
 import com.dev.gr.strategie.rest.service.data.Playlist;
 import com.dev.gr.strategie.rest.service.utils.Utils;
 import com.jayway.restassured.http.ContentType;
+import com.sun.xml.internal.ws.client.sei.ResponseBuilder.Body;
 
 public class TestAgent {
 
@@ -137,23 +138,41 @@ public class TestAgent {
 		when().
 			delete(buildURL("/files/" + fileName)).
 		then().
+			log().ifValidationFails().
 			statusCode(404).
 			body("status", equalTo("ERROR")).
 			body("data", containsString("NoSuchFileException"));
 	}
 	
 	@Test
-	public void testStartSchedule() throws InterruptedException {
-		Playlist playlist = new Playlist("playlist1", Arrays.asList("testFile1.txt", "testFile2.txt"), "0/2 * * * * ?", null);
+	public void testSchedulePlaylist() throws InterruptedException {
+		Playlist playlist = new Playlist("playlist1", Arrays.asList("testFile1.txt", "testFile2.txt"), "0/2 * * * * ?", "1/4 * * * * ?");
 		given().
+			log().ifValidationFails().
 			contentType(ContentType.JSON).
 			body(playlist).
 		when().
-			post(buildURL("/schedule/playlist")).
+			post(buildURL("/playlist/schedule")).
 		then().
-			statusCode(200);
-		Thread.sleep(5000);
+			log().ifValidationFails().
+			statusCode(200).
+			body("status", equalTo("SUCCESS"));
 			
+		Thread.sleep(5000);	
+		testRemovePlaylist();
+	}
+	
+	//@Test
+	public void testRemovePlaylist() {
+		String playlistName = "playlist1";
+		given().
+			log().ifValidationFails().
+		when().
+			delete(buildURL("/playlist/" + playlistName)).
+		then().
+			statusCode(200).
+			body("status", equalTo("SUCCESS"));
+		
 	}
 	
 	public static final String buildURL(String uri) {

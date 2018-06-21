@@ -1,21 +1,31 @@
 package com.dev.gr.strategie.rest.service.job;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.dev.gr.strategie.rest.service.utils.Utils;
 
 public class AddToDisplay implements Job {
+	
+	private static final Logger log = LoggerFactory.getLogger(AddToDisplay.class);
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		((List<String>) context.getMergedJobDataMap().getWrappedMap().get("filenames")).forEach(System.out::println);
-		/*System.out.println("Added to display ! : " + context.getMergedJobDataMap().getString("filename"));
-		try {
-			FileUtils.copyFileToDirectory(Utils.testDataPath().resolve("testFile.txt").toFile(), Utils.dataPath().resolveSibling("Videos").toFile());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		List<String> filenames = ((List<String>) context.getMergedJobDataMap().getWrappedMap().get("filenames"));
+		filenames.forEach(f -> {
+			try {
+				FileUtils.copyFileToDirectory(Utils.dataPath().resolve(f).toFile(), Utils.dataPath().resolveSibling("Videos").toFile());
+				log.info("Copied " + f + " to " + Utils.data().getAbsolutePath());
+			} catch (IOException e) {
+				log.error("Exception raised :", e);
+			}
+		});
 	}
 }
