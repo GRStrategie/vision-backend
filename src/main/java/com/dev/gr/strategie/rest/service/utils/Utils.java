@@ -3,12 +3,14 @@ package com.dev.gr.strategie.rest.service.utils;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
 
 import org.apache.commons.io.FilenameUtils;
 
 public class Utils {
-	private static final String DATA_ROOT_DIR= "data";
-	private static final String DATA_TEST_DIR = "testData";
+	private static final ResourceBundle rb = ResourceBundle.getBundle("config");
+	private static final String DATA_ROOT_DIR= rb.getString("data_root_dir");
+	private static final String DATA_TEST_DIR = rb.getString("data_test_dir");
 	
 	private static final Path dataPath = Paths.get(DATA_ROOT_DIR);	
 	private static final Path testDataPath = dataPath.resolve(DATA_TEST_DIR);
