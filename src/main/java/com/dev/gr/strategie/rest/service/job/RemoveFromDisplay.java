@@ -21,8 +21,8 @@ public class RemoveFromDisplay implements Job {
 		List<String> filenames = ((List<String>) context.getMergedJobDataMap().getWrappedMap().get("filenames"));
 		filenames.forEach(f -> {
 			try {
-				Files.delete(dataPath().resolveSibling("Videos").resolve(f));
-				log.info("Deleted " + f + " from " + dataPath().resolveSibling("Videos"));
+				Files.delete(videosPath().resolve(f));
+				log.info("Deleted " + f + " from " + videos().getAbsolutePath());
 			} catch (IOException e) {
 				log.error("Exception raised :", e);
 			}

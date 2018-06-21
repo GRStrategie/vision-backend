@@ -1,12 +1,12 @@
 package com.dev.gr.strategie.rest.service.api;
 
 
+import static com.dev.gr.strategie.rest.service.utils.Utils.data;
+import static com.dev.gr.strategie.rest.service.utils.Utils.dataPath;
 import static j2html.TagCreator.button;
 import static j2html.TagCreator.form;
 import static j2html.TagCreator.input;
-import static com.dev.gr.strategie.rest.service.utils.Utils.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,18 +57,17 @@ public class FileApi {
 	};
 	
 	public static Route listFiles = (req, res) -> {	
-		File directory = data();
 		res.type("application/json");
 		
-		if(directory.isDirectory()) {
-			Optional<String[]> filenameOptional = Optional.ofNullable(directory.list());				
+		if(data().isDirectory()) {
+			Optional<String[]> filenameOptional = Optional.ofNullable(data().list());				
 			List<String> filenameList = Arrays.asList(filenameOptional.orElse(new String[]{})).
 					stream().
 					map(f -> FilenameUtils.getName(f)).
 					collect(Collectors.toList());
 			return new StandardResponse(StatusResponse.SUCCESS, gson.toJsonTree(filenameList));
 		} else {
-			return new StandardResponse(StatusResponse.ERROR, "Path " + directory.getAbsolutePath() + " is not a directory");
+			return new StandardResponse(StatusResponse.ERROR, "Path " + data().getAbsolutePath() + " is not a directory");
 		}		
 	};
 				

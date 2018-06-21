@@ -15,6 +15,7 @@ public class Utils {
 	
 	private static final Path dataPath = Paths.get(DATA_ROOT_DIR);	
 	private static final Path testDataPath = dataPath.resolve(DATA_TEST_DIR);
+	private static final Path videosPath = dataPath.resolveSibling("Videos");
 	
 	public static final String baseUrl() {
 		return BASE_URL;
@@ -34,6 +35,14 @@ public class Utils {
 	
 	public static final File testData() {
 		return testDataPath.toFile();
+	}
+	
+	public static final Path videosPath() {
+		return videosPath;
+	}
+	
+	public static final File videos() {
+		return videosPath.toFile();
 	}
 	
 	public static final String suffixFileName(String fileName, String suffix) {

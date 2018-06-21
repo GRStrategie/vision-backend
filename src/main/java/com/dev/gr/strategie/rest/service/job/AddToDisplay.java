@@ -21,8 +21,8 @@ public class AddToDisplay implements Job {
 		List<String> filenames = ((List<String>) context.getMergedJobDataMap().getWrappedMap().get("filenames"));
 		filenames.forEach(f -> {
 			try {
-				FileUtils.copyFileToDirectory(dataPath().resolve(f).toFile(), dataPath().resolveSibling("Videos").toFile());
-				log.info("Copied " + f + " to " + data().getAbsolutePath());
+				FileUtils.copyFileToDirectory(dataPath().resolve(f).toFile(), videos());
+				log.info("Copied " + f + " to " + videos().getAbsolutePath());
 			} catch (IOException e) {
 				log.error("Exception raised :", e);
 			}

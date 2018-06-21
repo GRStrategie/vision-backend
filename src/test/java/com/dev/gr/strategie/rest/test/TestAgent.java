@@ -59,7 +59,7 @@ public class TestAgent {
 		
 	}
 
-	//@Test
+	@Test
 	public void testListFile() {
 		given().
 			log().ifValidationFails().
@@ -71,7 +71,7 @@ public class TestAgent {
 			body("data", hasItem("testFile.txt"));
 	}
 	
-	//@Test
+	@Test
 	public void testUploadFile() {
 		given().
 			contentType("multipart/form-data").
@@ -82,7 +82,7 @@ public class TestAgent {
 			statusCode(200);
 	}
 		
-	//@Test
+	@Test
 	public void  testDownloadFile() throws IOException {
 		String fileName = "testDownloadFile.zip";
 		File sourceFile = dataPath().resolve(fileName).toFile();
@@ -110,7 +110,7 @@ public class TestAgent {
 		} 
 	}
 	
-	//@Test
+	@Test
 	public void  testDeleteFile() {
 		String fileName = "testDeleteFile.txt";
 		given().
@@ -151,7 +151,7 @@ public class TestAgent {
 		testRemovePlaylist();
 	}
 	
-	//@Test
+	@Test
 	public void testRemovePlaylist() {
 		String playlistName = "playlist1";
 		given().
