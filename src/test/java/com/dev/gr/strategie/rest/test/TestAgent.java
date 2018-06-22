@@ -44,7 +44,6 @@ public class TestAgent {
 		agent = new Agent();
 	}
 	
-
 	@After
 	public void after() {
 	}

@@ -3,13 +3,16 @@ package com.dev.gr.strategie.rest.service.api;
 
 import static com.dev.gr.strategie.rest.service.utils.Utils.data;
 import static com.dev.gr.strategie.rest.service.utils.Utils.dataPath;
+import static com.dev.gr.strategie.rest.service.utils.Utils.videosPath;
 import static j2html.TagCreator.button;
 import static j2html.TagCreator.form;
 import static j2html.TagCreator.input;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +21,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.MultipartConfigElement;
 
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,30 +42,34 @@ public class FileApi {
 				).render();			
 	};
 
-	public static Route uploadFile = (req, res) -> {	
+	public static Route uploadFile = (req, res) -> {
+		res.header("Access-Control-Allow-Origin", "*");
 		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 		req.raw().getParts().stream()
 			.filter(p -> p.getName().equals("file"))
 			.forEach(p -> {
 		        try {
-					Files.copy(p.getInputStream(), dataPath().resolve(p.getSubmittedFileName()), StandardCopyOption.REPLACE_EXISTING);
+					Files.copy(p.getInputStream(), dataPath().resolve(Paths.get(p.getSubmittedFileName()).getFileName()), StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
 					log.error("Exception raised : ", e);
 					res.status(500);
-					throw new RuntimeException(e);
+					res.body(e.toString());
 				}
 			});
-        return gson.toJson(new StandardResponse(StatusResponse.SUCCESS));
+		res.type("application/json");		
+        return new StandardResponse(StatusResponse.SUCCESS);
 	};
 	
 	public static Route listFiles = (req, res) -> {	
-		res.type("application/json");
+		res.header("Access-Control-Allow-Origin", "*");
+		res.type("application/json");	
 		
 		if(data().isDirectory()) {
-			Optional<String[]> filenameOptional = Optional.ofNullable(data().list());				
-			List<String> filenameList = Arrays.asList(filenameOptional.orElse(new String[]{})).
+			Optional<File[]> fileOptional = Optional.ofNullable(data().listFiles());				
+			List<String> filenameList = Arrays.asList(fileOptional.orElse(new File[]{})).
 					stream().
-					map(f -> FilenameUtils.getName(f)).
+					filter(f -> f.isFile()).
+					map(f -> f.getName()).
 					collect(Collectors.toList());
 			return new StandardResponse(StatusResponse.SUCCESS, gson.toJsonTree(filenameList));
 		} else {
@@ -72,7 +78,7 @@ public class FileApi {
 	};
 				
 	public static Route downloadFile = (req, res) -> {	
-		Path filePath = dataPath().resolve(req.params(":filename"));
+		Path filePath = videosPath().resolve(req.params(":filename"));
 		res.type("application/json");
 		try {
 			res.status(200);
@@ -86,7 +92,7 @@ public class FileApi {
 	};
 	
 	public static Route deleteFile = (req, res) -> {
-		Path filePath = dataPath().resolve(req.params(":filename"));
+		Path filePath = videosPath().resolve(req.params(":filename"));
 		res.type("application/json");
 		try {
 			Files.delete(filePath);

@@ -25,7 +25,7 @@ public class Agent {
 		path("/api", () -> {
 			path("/files", () -> {
 				get("/sendFile",					FileApi.sendFile);		
-				post("",							FileApi.uploadFile);
+				post("",							FileApi.uploadFile,					new JsonTransformer());
 				get("",		 						FileApi.listFiles,					new JsonTransformer());
 				get("/:filename",		 			FileApi.downloadFile);
 				delete("/:filename",				FileApi.deleteFile,					new JsonTransformer());	
