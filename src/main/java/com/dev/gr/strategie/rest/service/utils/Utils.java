@@ -3,7 +3,11 @@ package com.dev.gr.strategie.rest.service.utils;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -57,5 +61,13 @@ public class Utils {
 		return new StringBuilder(prefix)
 				.append(FilenameUtils.getName(fileName))
 				.toString();
+	}
+	
+	public static final List<String> getFilenameList(File directory) {
+		return Arrays.asList(Optional.ofNullable(directory.listFiles()).orElse(new File[]{})).
+				stream().
+				filter(f -> f.isFile()).
+				map(f -> f.getName()).
+				collect(Collectors.toList());
 	}
 }
