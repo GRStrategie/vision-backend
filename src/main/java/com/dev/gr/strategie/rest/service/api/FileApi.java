@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import com.dev.gr.strategie.rest.service.utils.StandardResponse;
 import com.dev.gr.strategie.rest.service.utils.StatusResponse;
 import com.google.gson.Gson;
-import com.sun.javafx.runtime.SystemProperties;
 
 import spark.Route;
 
@@ -45,6 +44,7 @@ public class FileApi {
 
 	public static Route uploadFile = (req, res) -> {
 		res.header("Access-Control-Allow-Origin", "*");
+		
 		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 		req.raw().getParts().stream()
 			.filter(p -> p.getName().equals("file"))
@@ -80,30 +80,28 @@ public class FileApi {
 				
 	public static Route downloadFile = (req, res) -> {
 		res.header("Access-Control-Allow-Origin", "*");
-		Path filePath = videosPath().resolve(req.params(":filename"));
 		res.type("application/json");
+		res.status(200);
 		
+		Path filePath = dataPath().resolve(req.params(":filename"));	
 		try {
-			res.status(200);
 			return Files.newInputStream(filePath);
 		} catch(IOException e) {
 			log.error("Exception raised : ", e);
 			res.status(404);
-			res.type("application/json");
 			return gson.toJson(new StandardResponse(StatusResponse.ERROR, gson.toJsonTree(e.toString())));
 		}		
 	};
 	
 	public static Route deleteFile = (req, res) -> {
 		res.header("Access-Control-Allow-Origin", "*");
-		Path filePath = dataPath().resolve(req.params(":filename"));
-		System.out.println(filePath.toAbsolutePath().toString());
 		res.type("application/json");
-		
+		res.status(200);
+
+		Path filePath = dataPath().resolve(req.params(":filename"));	
 		try {
 			Files.delete(filePath);
 			log.info("File " + filePath + " has been successfully deleted");
-			res.status(200);
 			return new StandardResponse(StatusResponse.SUCCESS, "File " + filePath + " has been successfully deleted");
 		} catch (IOException e) {
 			log.error("Exception raised :" , e);
