@@ -32,7 +32,7 @@ public class Agent {
 				post("",							FileApi.uploadFile,					new JsonTransformer());
 				get("",		 						FileApi.listFiles,					new JsonTransformer());
 				get("/:filename",		 			FileApi.downloadFile);
-				delete("/:filename",				FileApi.deleteFile,					new JsonTransformer());	
+				get("/delete/:filename",			FileApi.deleteFile,					new JsonTransformer());	
 			});
 			path("/playlist", () -> {
 				post("/schedule",					ScheduleApi.schedulePlaylist,		new JsonTransformer());

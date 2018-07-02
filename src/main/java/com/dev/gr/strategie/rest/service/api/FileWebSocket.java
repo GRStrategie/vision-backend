@@ -15,7 +15,6 @@ import java.nio.file.WatchService;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -72,10 +71,10 @@ public class FileWebSocket {
 	
 	private void sendSessionsData(StatusResponse statusResponse, List<String> data) {
 		sessions.stream()
-		.filter(s -> s.isOpen())
-		.forEach(s -> {
-			log.info("Sending data to " + s.getRemoteAddress());
-			s.getRemote().sendStringByFuture(gson.toJson(new StandardResponse(statusResponse, gson.toJsonTree(data))));
-		});
+			.filter(s -> s.isOpen())
+			.forEach(s -> {
+				log.info("Sending data to " + s.getRemoteAddress());
+				s.getRemote().sendStringByFuture(gson.toJson(new StandardResponse(statusResponse, gson.toJsonTree(data))));
+			});
 	}
 }

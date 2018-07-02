@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.dev.gr.strategie.rest.service.utils.StandardResponse;
 import com.dev.gr.strategie.rest.service.utils.StatusResponse;
 import com.google.gson.Gson;
+import com.sun.javafx.runtime.SystemProperties;
 
 import spark.Route;
 
@@ -77,9 +78,11 @@ public class FileApi {
 		}		
 	};
 				
-	public static Route downloadFile = (req, res) -> {	
+	public static Route downloadFile = (req, res) -> {
+		res.header("Access-Control-Allow-Origin", "*");
 		Path filePath = videosPath().resolve(req.params(":filename"));
 		res.type("application/json");
+		
 		try {
 			res.status(200);
 			return Files.newInputStream(filePath);
@@ -92,8 +95,11 @@ public class FileApi {
 	};
 	
 	public static Route deleteFile = (req, res) -> {
-		Path filePath = videosPath().resolve(req.params(":filename"));
+		res.header("Access-Control-Allow-Origin", "*");
+		Path filePath = dataPath().resolve(req.params(":filename"));
+		System.out.println(filePath.toAbsolutePath().toString());
 		res.type("application/json");
+		
 		try {
 			Files.delete(filePath);
 			log.info("File " + filePath + " has been successfully deleted");
